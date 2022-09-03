@@ -53,7 +53,6 @@
         <div class="form-group text-end">
             <button class="btn btn-primary" type="submit">Sign Up</button>
         </div>
-
     </form>
 
     <div class="mb-2">

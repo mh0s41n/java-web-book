@@ -40,18 +40,4 @@ public class CartItem {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CartItem cartItem = (CartItem) o;
-        return Objects.equals(id, cartItem.id) && Objects.equals(product, cartItem.product)
-                && Objects.equals(price, cartItem.price);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, product, price);
-    }
 }

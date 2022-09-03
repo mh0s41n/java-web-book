@@ -4,10 +4,10 @@ import com.mhosain.cart.domain.Cart;
 import com.mhosain.cart.domain.CartItem;
 import com.mhosain.cart.domain.Product;
 import com.mhosain.cart.domain.User;
+import com.mhosain.cart.exceptions.CartItemNotFoundException;
 import com.mhosain.cart.exceptions.ProductNotFoundException;
 import com.mhosain.cart.repository.CartItemRepository;
 import com.mhosain.cart.repository.CartRepository;
-import com.mhosain.cart.repository.CartRepositoryImpl;
 import com.mhosain.cart.repository.ProductRepository;
 
 import java.math.BigDecimal;
@@ -35,16 +35,82 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addProductToCart(String productId, Cart cart) {
-        if (productId == null || productId.length() == 0) {
-            throw new IllegalArgumentException("Product id cannot be null");
-        }
-
-        Long id = parseProductId(productId);
-
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not " + "found by id: " + id));
+        Product product = findProduct(productId);
 
         addProductToCart(product, cart);
 
+        updateCart(cart);
+    }
+
+    @Override
+    public void removeProductFromCart(String productId, Cart cart) {
+        Product product = findProduct(productId);
+
+        removeProductFromCart(product, cart);
+
+        updateCart(cart);
+    }
+
+    @Override
+    public void deleteProductFromCart(String productId, Cart cart) {
+        Product product = findProduct(productId);
+
+        deleteProductFromCart(product, cart);
+
+        updateCart(cart);
+    }
+
+    private void addProductToCart(Product product, Cart cart) {
+        var cartItemOptional = findSimilarProductInCart(cart, product);
+
+        var cartItem = cartItemOptional.map(this::increaseQuantityByOne)
+                .orElseGet(() -> createNewCartItem(product));
+
+        cart.getCartItems().add(cartItem);
+    }
+
+    private void removeProductFromCart(Product product, Cart cart) {
+        var itemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product)).findAny();
+
+        var cartItem = itemOptional
+                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found by product: " + product));
+
+        if (cartItem.getQuantity() > 1) {
+            cartItem.setQuantity(cartItem.getQuantity() - 1);
+            cartItem.setPrice(cartItem.getPrice().subtract(product.getPrice()));
+
+            cart.getCartItems().add(cartItem);
+
+            cartItemRepository.update(cartItem);
+        } else {
+            cart.getCartItems().remove(cartItem);
+            cartItemRepository.remove(cartItem);
+        }
+    }
+
+    private void deleteProductFromCart(Product product, Cart cart) {
+        var itemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product)).findAny();
+
+        var cartItem = itemOptional
+                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found by product: " + product));
+
+        cart.getCartItems().remove(cartItem);
+        cartItemRepository.remove(cartItem);
+    }
+
+    private Product findProduct(String productId) {
+        if (productId == null || productId.length() == 0) {
+            throw new IllegalArgumentException("Product id cannot be null");
+        }
+        Long id = parseProductId(productId);
+
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found by id: " + id));
+    }
+
+    private void updateCart(Cart cart) {
         Integer totalItem = getTotalItem(cart);
         BigDecimal totalPrice = calculateTotalPrice(cart);
 
@@ -52,14 +118,6 @@ public class CartServiceImpl implements CartService {
         cart.setTotalPrice(totalPrice);
 
         cartRepository.update(cart);
-    }
-
-    private void addProductToCart(Product product, Cart cart) {
-        var cartItemOptional = findSimilarProductInCart(cart, product);
-
-        var cartItem = cartItemOptional.map(this::increaseQuantityByOne).orElseGet(() -> createNewCartItem(product));
-
-        cart.getCartItems().add(cartItem);
     }
 
     private Cart createNewCart(User currentUser) {
