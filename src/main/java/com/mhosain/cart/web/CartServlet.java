@@ -3,7 +3,6 @@ package com.mhosain.cart.web;
 import com.mhosain.cart.domain.Cart;
 import com.mhosain.cart.domain.User;
 import com.mhosain.cart.repository.CartItemRepositoryImpl;
-import com.mhosain.cart.repository.CartRepository;
 import com.mhosain.cart.repository.CartRepositoryImpl;
 import com.mhosain.cart.repository.ProductRepositoryImpl;
 import com.mhosain.cart.service.Action;
@@ -11,7 +10,6 @@ import com.mhosain.cart.service.CartService;
 import com.mhosain.cart.service.CartServiceImpl;
 import com.mhosain.cart.util.SecurityContext;
 import com.mhosain.cart.util.StringUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,19 +52,18 @@ public class CartServlet extends HttpServlet {
 
     private void processCart(String productId, String action, Cart cart) {
         switch (Action.valueOf(action.toUpperCase())) {
-            case ADD:
+            case ADD -> {
                 LOGGER.info("Received request to add product with id: {} to cart", productId);
                 cartService.addProductToCart(productId, cart);
-                break;
-            case REMOVE:
+            }
+            case REMOVE -> {
                 LOGGER.info("Received request to remove product with id: {} from cart", productId);
                 cartService.removeProductFromCart(productId, cart);
-                break;
-            case DELETE:
+            }
+            case DELETE -> {
                 LOGGER.info("Received request to delete product with id: {} from cart", productId);
                 cartService.deleteProductFromCart(productId, cart);
-                break;
-
+            }
         }
     }
 

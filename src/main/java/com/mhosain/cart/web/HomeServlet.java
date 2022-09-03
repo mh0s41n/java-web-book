@@ -36,6 +36,13 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.info("Serving home page");
 
+        final String attribute = request.getParameter("orderSuccess");
+
+        if (attribute != null && Boolean.parseBoolean(attribute)) {
+            request.setAttribute("message",
+                    "<strong>Congratulations!</strong> Your order has been placed successfully");
+        }
+
         List<ProductDTO> allProducts = productService.findAllProductSortedByName();
         LOGGER.info("Total {} product found", allProducts.size());
 

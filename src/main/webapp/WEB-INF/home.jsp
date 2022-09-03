@@ -3,6 +3,8 @@
 <%@include file="includes/header.jsp" %>
 <%@include file="includes/navigation.jsp" %>
 
+
+
 <div class="container">
 
     <div class="p-3 mb-2 bg-light rounded">
@@ -36,8 +38,14 @@
                 </c:if>
             </div>
         </div>
+    </div>
 
-
+    <div class="row mt-4">
+        <c:if test="${message != null}">
+            <div class="alert alert-success">
+                    ${message}
+            </div>
+        </c:if>
     </div>
 
     <div class="row mt-4">

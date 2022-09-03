@@ -4,7 +4,7 @@ import com.mhosain.cart.domain.Cart;
 import com.mhosain.cart.domain.CartItem;
 import com.mhosain.cart.domain.Product;
 import com.mhosain.cart.domain.User;
-import com.mhosain.cart.exceptions.CartItemNotFoundException;
+import com.mhosain.cart.exceptions.CartNotFoundException;
 import com.mhosain.cart.exceptions.ProductNotFoundException;
 import com.mhosain.cart.repository.CartItemRepository;
 import com.mhosain.cart.repository.CartRepository;
@@ -74,7 +74,7 @@ public class CartServiceImpl implements CartService {
                 .filter(cartItem -> cartItem.getProduct().equals(product)).findAny();
 
         var cartItem = itemOptional
-                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found by product: " + product));
+                .orElseThrow(() -> new CartNotFoundException("Cart item not found by product: " + product));
 
         if (cartItem.getQuantity() > 1) {
             cartItem.setQuantity(cartItem.getQuantity() - 1);
@@ -94,7 +94,7 @@ public class CartServiceImpl implements CartService {
                 .filter(cartItem -> cartItem.getProduct().equals(product)).findAny();
 
         var cartItem = itemOptional
-                .orElseThrow(() -> new CartItemNotFoundException("Cart item not found by product: " + product));
+                .orElseThrow(() -> new CartNotFoundException("Cart item not found by product: " + product));
 
         cart.getCartItems().remove(cartItem);
         cartItemRepository.remove(cartItem);
