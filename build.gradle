@@ -22,12 +22,14 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    implementation('org.hibernate:hibernate-core:6.1.1.Final')
+    implementation('org.hibernate:hibernate-core:6.1.2.Final')
     implementation('org.glassfish.jaxb:jaxb-runtime:4.0.0')
-    implementation('org.hibernate.validator:hibernate-validator:7.0.4.Final')
+    implementation('org.hibernate.validator:hibernate-validator:7.0.5.Final')
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:2.0.0'
     implementation 'org.webjars:bootstrap:5.2.0'
     implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
 
     compileOnly('jakarta.platform:jakarta.jakartaee-web-api:9.1.0')
 

@@ -35,7 +35,7 @@ public class OrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        addCartToUi(req);
+        addCartToUI(req);
 
         req.setAttribute("countries", getCountries());
 
@@ -44,7 +44,7 @@ public class OrderServlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/order.jsp").forward(req, resp);
     }
 
-    private void addCartToUi(HttpServletRequest req) {
+    private void addCartToUI(HttpServletRequest req) {
         if (SecurityContext.isAuthenticated(req)) {
             var currentUser = SecurityContext.getCurrentUser(req);
             var cart = cartService.getCartByUser(currentUser);
@@ -66,7 +66,7 @@ public class OrderServlet extends HttpServlet {
             req.setAttribute("countries", getCountries());
             req.setAttribute("errors", errors);
             req.setAttribute("shippingAddress", shippingAddress);
-            addCartToUi(req);
+            addCartToUI(req);
             req.getRequestDispatcher("/WEB-INF/order.jsp").forward(req, resp);
         } else {
             orderService.processOrder(shippingAddress, SecurityContext.getCurrentUser(req));

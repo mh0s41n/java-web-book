@@ -1,10 +1,9 @@
 package com.mhosain.cart.web;
 
-import com.mhosain.cart.domain.Cart;
 import com.mhosain.cart.dto.ProductDTO;
 import com.mhosain.cart.repository.CartItemRepositoryImpl;
 import com.mhosain.cart.repository.CartRepositoryImpl;
-import com.mhosain.cart.repository.ProductRepositoryImpl;
+import com.mhosain.cart.repository.JdbcProductRepositoryImpl;
 import com.mhosain.cart.service.CartService;
 import com.mhosain.cart.service.CartServiceImpl;
 import com.mhosain.cart.service.ProductService;
@@ -24,11 +23,11 @@ import java.util.List;
 @WebServlet("/home")
 public class HomeServlet extends HttpServlet {
     public static final Logger LOGGER = LoggerFactory.getLogger(HomeServlet.class);
-    private final ProductService productService = new ProductServiceImpl(new ProductRepositoryImpl());
+    private ProductService productService = new ProductServiceImpl(new JdbcProductRepositoryImpl());
 
     public static final CartService cartService = new CartServiceImpl(
             new CartRepositoryImpl(),
-            new ProductRepositoryImpl(),
+            new JdbcProductRepositoryImpl(),
             new CartItemRepositoryImpl()
     );
 
